@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="">
+
+    <title>Halfday</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles-->
+    <link href="cover.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="site-wrapper">
+
+      <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+          <div class="inner cover">
+            <h1 class="cover-heading" id="print">What day are you exactly half your parents age?</h1>
+              <br>
+              <form class="form" role="form" id="form">
+
+                <div class="form-group">
+                  <label for="my-DOB">My Date of Birth</label>
+                  <input type="text" class="form-control" id="my-DOB" placeholder="DD/MM/YYYY">
+                </div>
+
+                <div class="form-group">
+                  <label for="mumordad">Parent</label>
+                  <select class="form-control" id="mum-or-dad">
+                    <option>Mum</option>
+                    <option>Dad</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="parent-DOB">Parent Date of Birth</label>
+                  <input type="text" class="form-control" id="parent-DOB" placeholder="DD/MM/YYYY">
+                </div>
+                <br>
+                <button type="button" class="btn btn-default" onclick="calculate()">Calculate our Halfday</button>
+              </form>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <script>
+
+      function calculate()
+      {
+        var myDOB = createDate(document.forms["form"]["my-DOB"].value);
+        var parentDOB = createDate(document.forms["form"]["parent-DOB"].value);
+
+        var halfday = new Date();
+        halfday.setTime(myDOB.getTime() + (myDOB - parentDOB));
+
+        var parentAgeInMinutes = (halfday - parentDOB)/(1000*60);
+        var yourAgeInMinutes = (halfday - myDOB)/(1000*60);
+
+        document.getElementById("print").innerHTML = "On " + halfday.toDateString() + " you will be exactly half your " + document.forms["form"]["mum-or-dad"].value + "s age. You will be " + 
+        minutesToString(yourAgeInMinutes) + " old and your " + document.forms["form"]["mum-or-dad"].value + " will be " + minutesToString(parentAgeInMinutes) + " old";
+      }
+
+      function minutesToString(minutes)
+      {
+        var numyears = Math.floor(minutes / 525949);
+        var numdays = Math.floor((minutes % 525949) / 1440);
+        return numyears + " years " +  numdays + " days ";
+      }
+
+      function createDate(mmddyyyy)
+      {
+        var day = parseInt(mmddyyyy.substring(0,2))
+        var month = parseInt(mmddyyyy.substring(3,5)) - 1
+        var year = parseInt(mmddyyyy.substring(6,10))
+
+        return new Date(year,month,day)
+      }
+
+    </script>
+  </body>
+</html>
