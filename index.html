@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
+    <meta name="description" content="Calculate you and your parents Halfday. The day your exactly half one of your parents age.">
     <meta name="author" content="">
     <link rel="shortcut icon" href="">
 
@@ -27,6 +27,7 @@
 
           <div class="inner cover">
             <h1 class="cover-heading" id="print">What day are you exactly half your parents age?</h1>
+            <div id="share"></div>
               <br>
               <form class="form" role="form" id="form">
 
@@ -74,6 +75,8 @@
 
         document.getElementById("print").innerHTML = "On " + halfday.toDateString() + " you will be exactly half your " + document.forms["form"]["mum-or-dad"].value + "s age. You will be " + 
         minutesToString(yourAgeInMinutes) + " old and your " + document.forms["form"]["mum-or-dad"].value + " will be " + minutesToString(parentAgeInMinutes) + " old";
+
+        document.getElementById("share").innerHTML = "<a href='https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Falbertstill.github.io' target='_blank' class='btn btn-default'>Share on Facebook</a>"
       }
 
       function minutesToString(minutes)
