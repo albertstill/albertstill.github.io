@@ -1,3 +1,7 @@
+input {
+  color: black
+}
+
 .form-control {
 text-align: center;
 }

@@ -15,86 +15,88 @@
 
     <!-- Custom styles-->
     <link href="cover.css" rel="stylesheet">
+
+    <!-- Facebook React -->
+    <script src="http://fb.me/react-with-addons-0.11.1.min.js"></script>
+    <script src="http://fb.me/JSXTransformer-0.11.1.js"></script>
   </head>
 
   <body>
 
-    <div class="site-wrapper">
+    <div id="app"></div>
 
-      <div class="site-wrapper-inner">
+    <script type="text/jsx">
+      /** @jsx React.DOM */
 
-        <div class="cover-container">
+      var HalfDayBannerMessage = React.createClass({
+        getInitialState: function () {
+          return {
+            message: 'What day are you exactly half your parents age?'
+          };
+        },
 
-          <div class="inner cover">
-            <h1 class="cover-heading" id="print">What day are you exactly half your parents age?</h1>
-            <div id="share"></div>
-              <br>
-              <form class="form" role="form" id="form">
+        minutesToString: function(minutes) {
+          var numyears = Math.floor(minutes / 525949);
+          var numdays = Math.floor((minutes % 525949) / 1440);
+          return numyears + " years " +  numdays + " days ";
+        },
 
-                <div class="form-group">
-                  <label for="my-DOB">My Date of Birth</label>
-                  <input type="text" class="form-control" id="my-DOB" placeholder="DD/MM/YYYY">
-                </div>
+        render: function () {
+          if (this.props.myDateOfBirth && this.props.parentDateOfBirth) {
+            var myDateOfBirth = new Date(this.props.myDateOfBirth);
+            var parentDateOfBirth = new Date(this.props.parentDateOfBirth);
 
-                <div class="form-group">
-                  <label for="mumordad">Parent</label>
-                  <select class="form-control" id="mum-or-dad">
-                    <option>Mum</option>
-                    <option>Dad</option>
-                  </select>
-                </div>
+            var milisecondsOlderThanParentWhenBorn = myDateOfBirth.getTime() - parentDateOfBirth.getTime();
+            var halfday = new Date(myDateOfBirth.getTime() + milisecondsOlderThanParentWhenBorn);
 
-                <div class="form-group">
-                  <label for="parent-DOB">Parent Date of Birth</label>
-                  <input type="text" class="form-control" id="parent-DOB" placeholder="DD/MM/YYYY">
-                </div>
-                <br>
-                <button type="button" class="btn btn-default" onclick="calculate()">Calculate our Halfday</button>
-              </form>
+            // 1000 converts from miliseconds to seconds. 60 converts seconds to minutes
+            var parentAgeInMinutes = (halfday - parentDateOfBirth)/(1000*60);
+            var yourAgeInMinutes = (halfday - myDateOfBirth)/(1000*60);
 
-          </div>
+            this.state.message = "On " + halfday.toDateString() + " you will be exactly half your parents age. You will be " +
+            this.minutesToString(yourAgeInMinutes) + " old and your parent will be " + this.minutesToString(parentAgeInMinutes) + " old";
 
-        </div>
+            // document.getElementById("share").innerHTML = "<a href='https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Falbertstill.github.io' target='_blank' class='btn btn-default'>Share on Facebook</a>"
+          }
 
-      </div>
+          return (
+            <h1 class="cover-heading">{this.state.message}</h1>
+          )
+        }
+      });
 
-    </div>
+      var HalfDayApp = React.createClass({
+        mixins: [React.addons.LinkedStateMixin],
 
-    <script>
+        getInitialState: function () {
+          return {
+            myDateOfBirth: null,
+            parentDateOfBirth: null
+          };
+        },
 
-      function calculate()
-      {
-        var myDOB = createDate(document.forms["form"]["my-DOB"].value);
-        var parentDOB = createDate(document.forms["form"]["parent-DOB"].value);
+        render: function () {
+          console.log(this.state);
+          console.log(new Date(this.state.myDateOfBirth));
+          return (
+              <div>
+                <HalfDayBannerMessage myDateOfBirth={this.state.myDateOfBirth} parentDateOfBirth={this.state.parentDateOfBirth} />
+                <label for="my-DOB">My Date of Birth: </label>
+                <input type='date' class="form-control" id="my-DOB" valueLink={this.linkState('myDateOfBirth')} />
 
-        var halfday = new Date();
-        halfday.setTime(myDOB.getTime() + (myDOB - parentDOB));
+                <label for="parent-DOB">Parent Date of Birth: </label>
+                <input type='date' class="form-control" id="parent-DOB" valueLink={this.linkState('parentDateOfBirth')} />
+              </div>
 
-        var parentAgeInMinutes = (halfday - parentDOB)/(1000*60);
-        var yourAgeInMinutes = (halfday - myDOB)/(1000*60);
+          );
+        }
+      });
 
-        document.getElementById("print").innerHTML = "On " + halfday.toDateString() + " you will be exactly half your " + document.forms["form"]["mum-or-dad"].value + "s age. You will be " + 
-        minutesToString(yourAgeInMinutes) + " old and your " + document.forms["form"]["mum-or-dad"].value + " will be " + minutesToString(parentAgeInMinutes) + " old";
 
-        document.getElementById("share").innerHTML = "<a href='https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Falbertstill.github.io' target='_blank' class='btn btn-default'>Share on Facebook</a>"
-      }
-
-      function minutesToString(minutes)
-      {
-        var numyears = Math.floor(minutes / 525949);
-        var numdays = Math.floor((minutes % 525949) / 1440);
-        return numyears + " years " +  numdays + " days ";
-      }
-
-      function createDate(mmddyyyy)
-      {
-        var day = parseInt(mmddyyyy.substring(0,2))
-        var month = parseInt(mmddyyyy.substring(3,5)) - 1
-        var year = parseInt(mmddyyyy.substring(6,10))
-
-        return new Date(year,month,day)
-      }
-
+      React.renderComponent(
+        <HalfDayApp />,
+        document.getElementById('app')
+      );
     </script>
   </body>
 </html>
