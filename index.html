@@ -46,6 +46,13 @@
             var myDateOfBirth = new Date(this.props.myDateOfBirth);
             var parentDateOfBirth = new Date(this.props.parentDateOfBirth);
 
+            if(myDateOfBirth < parentDateOfBirth) {
+              this.state.message = "Your parent can't be born after you!"
+              return (
+                <h1 class="cover-heading">{this.state.message}</h1>
+              );
+            }
+
             var milisecondsOlderThanParentWhenBorn = myDateOfBirth.getTime() - parentDateOfBirth.getTime();
             var halfday = new Date(myDateOfBirth.getTime() + milisecondsOlderThanParentWhenBorn);
 
